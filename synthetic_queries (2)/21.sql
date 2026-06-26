@@ -1,0 +1,4 @@
+-- Redbench synthetic query for TPC-H Q21
+-- Feature fingerprint: tpch_q21
+
+SELECT DISTINCT ON("lineitem"."l_orderkey", "lineitem"."l_linenumber") "lineitem"."l_linenumber" FROM "lineitem" JOIN part ON "lineitem"."l_partkey" = "part"."p_partkey" JOIN partsupp ON "part"."p_partkey" = "partsupp"."ps_partkey" JOIN orders ON "lineitem"."l_orderkey" = "orders"."o_orderkey" JOIN customer ON "orders"."o_custkey" = "customer"."c_custkey" JOIN nation ON "customer"."c_nationkey" = "nation"."n_nationkey" WHERE "customer"."c_address" BETWEEN 'FmhOjChhiYdjCR8N9yaZJAR' AND 'uDkckq4eZKZBBwXlp1Wlb0vGZI2 qdmcZ' AND "nation"."n_name" BETWEEN 'ARGENTINA' AND 'MOZAMBIQUE' AND "partsupp"."ps_availqty" BETWEEN 1703 AND 8001 AND "part"."p_brand" BETWEEN 'Brand#11' AND 'Brand#42' AND "lineitem"."l_receiptdate" BETWEEN '1993-07-14' AND '1997-09-04' AND "orders"."o_shippriority" BETWEEN 0 AND 0;

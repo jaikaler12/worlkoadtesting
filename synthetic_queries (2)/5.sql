@@ -1,0 +1,4 @@
+-- Redbench synthetic query for TPC-H Q5
+-- Feature fingerprint: tpch_q05
+
+SELECT DISTINCT ON("supplier"."s_suppkey") "supplier"."s_address", "supplier"."s_suppkey" FROM "supplier" JOIN partsupp ON "supplier"."s_suppkey" = "partsupp"."ps_suppkey" JOIN nation ON "supplier"."s_nationkey" = "nation"."n_nationkey" JOIN lineitem ON "supplier"."s_suppkey" = "lineitem"."l_suppkey" JOIN part ON "lineitem"."l_partkey" = "part"."p_partkey" JOIN customer ON "nation"."n_nationkey" = "customer"."c_nationkey" WHERE "customer"."c_mktsegment" BETWEEN 'BUILDING' AND 'MACHINERY' AND "supplier"."s_acctbal" BETWEEN 2671.67 AND 9754.61 AND "nation"."n_name" BETWEEN 'CANADA' AND 'ROMANIA' AND "part"."p_brand" BETWEEN 'Brand#22' AND 'Brand#53' AND "partsupp"."ps_comment" BETWEEN 'ckages sleep furiously; quickly even requests wake clos' AND 'ts. slyly special excuses nag carefully toward the slyly bold deposits. expre' AND "lineitem"."l_receiptdate" BETWEEN '1992-04-01' AND '1996-07-24';

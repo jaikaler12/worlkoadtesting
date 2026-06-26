@@ -1,0 +1,4 @@
+-- Redbench synthetic query for TPC-H Q11
+-- Feature fingerprint: tpch_q11
+
+SELECT DISTINCT ON("orders"."o_orderkey") "orders"."o_orderdate", "orders"."o_clerk" FROM "orders" JOIN customer ON "orders"."o_custkey" = "customer"."c_custkey" JOIN nation ON "customer"."c_nationkey" = "nation"."n_nationkey" JOIN lineitem ON "orders"."o_orderkey" = "lineitem"."l_orderkey" JOIN supplier ON "lineitem"."l_suppkey" = "supplier"."s_suppkey" WHERE "orders"."o_shippriority" BETWEEN 0 AND 0 AND "lineitem"."l_receiptdate" BETWEEN '1992-04-01' AND '1998-12-31' AND "nation"."n_comment" BETWEEN 'haggle. carefully final deposits detect slyly agai' AND 'y final packages. slow foxes cajole quickly. quickly silent platelets breach ironic accounts. unusual pinto be' AND "customer"."c_phone" BETWEEN '10-325-233-9271' AND '34-999-618-6881' AND "supplier"."s_address" BETWEEN 'c6fBN9a 6EOcB1ZjbImMBAQMwI BKScDNVRP8' AND 'zzfDhdtZcvmVzA8rNFU,Yctj1zBN';

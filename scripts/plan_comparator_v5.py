@@ -328,7 +328,7 @@ def compare_plans(plan1_json, plan2_json) -> dict:
     return {
         "structural": s,
         "operator":   o,
-        "overall":    round(0.5 * s + 0.5 * o, 4),
+        "overall":    round((s * o), 4),
         "_t1": t1,
         "_t2": t2,
     }

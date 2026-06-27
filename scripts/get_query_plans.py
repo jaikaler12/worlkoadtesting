@@ -8,7 +8,7 @@ DB_NAME = "imdbjob"
 os.environ["PGPASSWORD"] = "jaideep.34"
 os.environ["PAGER"] = ""
 
-QUERY_DIR = os.path.expanduser("~/Downloads/sql_barber_synthetic_queries")
+QUERY_DIR = os.path.expanduser("/home/kaler/worlkoadtesting/imdb_job_queries")
 OUTPUT_FILE = "all_query_plans.json"
 
 results = {}
@@ -99,7 +99,7 @@ def strip_line_comments(sql):
     return "\n".join(clean_lines)
 
 
-print("Starting EXPLAIN for 22 TPC-H queries...")
+print("Starting EXPLAIN analyze for 22 TPC-H queries...")
 
 for i in range(1, 114):
     query_file = os.path.join(QUERY_DIR, f"{i}.sql")
@@ -120,21 +120,14 @@ for i in range(1, 114):
 
         create_parts = [s for s in parts if re.match(r"\s*create", s, re.I)]
         select_parts = [s for s in parts if re.match(r"\s*select", s, re.I)]
-
-        if i == 15 and create_parts:
-            create_stmt = create_parts[0]
-            select_stmt = select_parts[0]
-            view_name = re.search(r"create\s+view\s+(\w+)", create_stmt, re.I).group(1)
-            run_psql(f"DROP VIEW IF EXISTS {view_name};")
-            run_psql(create_stmt + ";")
-            raw_out = run_psql(f"EXPLAIN (FORMAT JSON)\n{select_stmt};")
-            results[query_key] = json.loads(raw_out)
-            run_psql(f"DROP VIEW IF EXISTS {view_name};")
-        else:
-            # Use the LAST SELECT - synthetic files sometimes have a setup SELECT first
-            stmt = select_parts[-1] if select_parts else parts[-1]
-            raw_out = run_psql(f"EXPLAIN (FORMAT JSON)\n{stmt};")
-            results[query_key] = json.loads(raw_out)
+        
+        
+        
+       
+        # Use the LAST SELECT - synthetic files sometimes have a setup SELECT first
+        stmt = select_parts[-1] if select_parts else parts[-1]
+        raw_out = run_psql(f"EXPLAIN (ANALYZE ,FORMAT JSON, BUFFERS)\n{stmt};")
+        results[query_key] = json.loads(raw_out)
 
         print("    OK")
 

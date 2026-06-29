@@ -8,7 +8,7 @@ DB_NAME = "imdbjob"
 os.environ["PGPASSWORD"] = "jaideep.34"
 os.environ["PAGER"] = ""
 
-QUERY_DIR = os.path.expanduser("/home/kaler/worlkoadtesting/imdb_job_queries")
+QUERY_DIR = os.path.expanduser("/home/kaler/worlkoadtesting/sql_barber_synthetic_queries")
 OUTPUT_FILE = "all_query_plans.json"
 
 results = {}
@@ -126,7 +126,7 @@ for i in range(1, 114):
        
         # Use the LAST SELECT - synthetic files sometimes have a setup SELECT first
         stmt = select_parts[-1] if select_parts else parts[-1]
-        raw_out = run_psql(f"EXPLAIN ( FORMAT JSON, BUFFERS)\n{stmt};")
+        raw_out = run_psql(f"EXPLAIN ( ANALYZE, FORMAT JSON, BUFFERS)\n{stmt};")
         results[query_key] = json.loads(raw_out)
 
         print("    OK")

@@ -4,11 +4,11 @@ import os
 import re
 
 DB_USER = "kaler"
-DB_NAME = "imdbjob"
+DB_NAME = "tpchdb"
 os.environ["PGPASSWORD"] = "jaideep.34"
 os.environ["PAGER"] = ""
 
-QUERY_DIR = os.path.expanduser("/home/kaler/worlkoadtesting/sql_barber_synthetic_queries")
+QUERY_DIR = os.path.expanduser("/home/kaler/worlkoadtesting/synthetic_queries")
 OUTPUT_FILE = "all_query_plans.json"
 
 results = {}
@@ -101,7 +101,7 @@ def strip_line_comments(sql):
 
 print("Starting EXPLAIN analyze for 22 TPC-H queries...")
 
-for i in range(1, 114):
+for i in range(1, 23):
     query_file = os.path.join(QUERY_DIR, f"{i}.sql")
     query_key = f"query_{i}"
 
@@ -118,27 +118,46 @@ for i in range(1, 114):
         clean_sql = strip_line_comments(raw_sql)
         parts = split_sql_statements(clean_sql)
 
-        create_parts = [s for s in parts if re.match(r"\s*create", s, re.I)]
-        select_parts = [s for s in parts if re.match(r"\s*select", s, re.I)]
-        
-        
-        
-       
-        # Use the LAST SELECT - synthetic files sometimes have a setup SELECT first
-        stmt = select_parts[-1] if select_parts else parts[-1]
-        raw_out = run_psql(f"EXPLAIN ( ANALYZE, FORMAT JSON, BUFFERS)\n{stmt};")
-        results[query_key] = json.loads(raw_out)
+        # Identify the position of the main SELECT statement
+        target_idx = -1
+        for idx, s in enumerate(parts):
+            if re.match(r"\s*select", s, re.I):
+                target_idx = idx
 
-        print("    OK")
+        # Fallback if no explicit standalone SELECT is detected
+        if target_idx == -1:
+            target_idx = len(parts) - 1
+
+        target_stmt = parts[target_idx]
+
+        # 1. Execute setup statements (e.g., CREATE VIEW) preceding the SELECT
+        for idx in range(target_idx):
+            run_psql(f"{parts[idx]};")
+
+        # 2. Run EXPLAIN ANALYZE on the primary SELECT statement
+        try:
+            raw_out = run_psql(f"EXPLAIN ( ANALYZE, FORMAT JSON, BUFFERS)\n{target_stmt};")
+            results[query_key] = json.loads(raw_out)
+            print("    OK")
+        except subprocess.CalledProcessError as e:
+            print(f"[-] {query_key} failed during EXPLAIN execution.")
+            print(f"    stderr: {e.stderr.strip()}")
+            results[query_key] = {"error": "EXPLAIN execution failed", "stderr": e.stderr}
+        except json.JSONDecodeError:
+            print(f"[-] Failed to parse JSON for {query_key}.")
+            results[query_key] = {"error": "Invalid JSON output"}
+
+        # 3. Execute cleanup statements (e.g., DROP VIEW) following the SELECT
+        for idx in range(target_idx + 1, len(parts)):
+            try:
+                run_psql(f"{parts[idx]};")
+            except subprocess.CalledProcessError as e:
+                print(f"    [Warning] Cleanup statement failed: {parts[idx][:40]}... -> {e.stderr.strip()}")
 
     except subprocess.CalledProcessError as e:
-        print(f"[-] {query_key} failed.")
+        print(f"[-] {query_key} failed during setup environment stage.")
         print(f"    stderr: {e.stderr.strip()}")
-        results[query_key] = {"error": "Execution failed", "stderr": e.stderr}
-
-    except json.JSONDecodeError:
-        print(f"[-] Failed to parse JSON for {query_key}.")
-        results[query_key] = {"error": "Invalid JSON output"}
+        results[query_key] = {"error": "Setup execution failed", "stderr": e.stderr}
 
 with open(OUTPUT_FILE, "w") as f:
     json.dump(results, f, indent=4)

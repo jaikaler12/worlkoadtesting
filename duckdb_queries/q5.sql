@@ -1,0 +1,5 @@
+-- Redbench synthetic query for TPC-H Q5
+-- Feature fingerprint: tpch_q05
+-- Run against: db_augmented_x2.duckdb
+
+SELECT DISTINCT ON("supplier_0"."s_suppkey") "supplier_0"."s_name" FROM "supplier_0" JOIN nation_0 ON "supplier_0"."s_nationkey" = "nation_0"."n_nationkey" JOIN partsupp_0 ON "supplier_0"."s_suppkey" = "partsupp_0"."ps_suppkey" JOIN customer_0 ON "nation_0"."n_nationkey" = "customer_0"."c_nationkey" JOIN orders_0 ON "customer_0"."c_custkey" = "orders_0"."o_custkey" JOIN lineitem_0 ON "orders_0"."o_orderkey" = "lineitem_0"."l_orderkey" WHERE "customer_0"."c_mktsegment" BETWEEN 'BUILDING' AND 'BUILDING' AND "orders_0"."o_shippriority" BETWEEN 0 AND 0 AND "supplier_0"."s_phone" BETWEEN '21-819-445-6675' AND '23-420-323-6460' AND "nation_0"."n_comment" BETWEEN 'l platelets. regular accounts x-ray: unusual, regular acco' AND 'nic deposits boost atop the quickly final requests? quickly regula' AND "lineitem_0"."l_quantity" BETWEEN 9.0 AND 12.0 AND "partsupp_0"."ps_supplycost" BETWEEN 380.85 AND 440.57;

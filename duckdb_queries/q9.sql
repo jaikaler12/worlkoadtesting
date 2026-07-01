@@ -1,0 +1,5 @@
+-- Redbench synthetic query for TPC-H Q9
+-- Feature fingerprint: tpch_q09
+-- Run against: db_augmented_x2.duckdb
+
+SELECT DISTINCT ON("lineitem_0"."l_orderkey", "lineitem_0"."l_linenumber") "lineitem_0"."l_comment" FROM "lineitem_0" JOIN partsupp_0 ON "lineitem_0"."l_partkey" = "partsupp_0"."ps_partkey" AND "lineitem_0"."l_suppkey" = "partsupp_0"."ps_suppkey" JOIN part_0 ON "lineitem_0"."l_partkey" = "part_0"."p_partkey" JOIN supplier_0 ON "partsupp_0"."ps_suppkey" = "supplier_0"."s_suppkey" JOIN orders_0 ON "lineitem_0"."l_orderkey" = "orders_0"."o_orderkey" JOIN customer_0 ON "orders_0"."o_custkey" = "customer_0"."c_custkey" WHERE "orders_0"."o_orderstatus" BETWEEN 'F' AND 'O' AND "customer_0"."c_acctbal" BETWEEN 3274.28 AND 8239.62 AND "supplier_0"."s_name" BETWEEN 'Supplier#000002000' AND 'Supplier#000006500' AND "part_0"."p_mfgr" BETWEEN 'Manufacturer#2' AND 'Manufacturer#5' AND "lineitem_0"."l_receiptdate" BETWEEN '1994-04-29T00:00:00' AND '1997-04-13T00:00:00' AND "partsupp_0"."ps_availqty" BETWEEN 2405 AND 6903;

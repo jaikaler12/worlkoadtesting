@@ -1,0 +1,5 @@
+-- Redbench synthetic query for TPC-H Q7
+-- Feature fingerprint: tpch_q07
+-- Run against: db_augmented_x2.duckdb
+
+SELECT DISTINCT ON("supplier_0"."s_suppkey") "supplier_0"."s_address" FROM "supplier_0" JOIN nation_0 ON "supplier_0"."s_nationkey" = "nation_0"."n_nationkey" JOIN partsupp_0 ON "supplier_0"."s_suppkey" = "partsupp_0"."ps_suppkey" JOIN customer_0 ON "nation_0"."n_nationkey" = "customer_0"."c_nationkey" JOIN lineitem_0 ON "partsupp_0"."ps_partkey" = "lineitem_0"."l_partkey" AND "partsupp_0"."ps_suppkey" = "lineitem_0"."l_suppkey" JOIN orders_0 ON "lineitem_0"."l_orderkey" = "orders_0"."o_orderkey" WHERE "customer_0"."c_mktsegment" BETWEEN 'HOUSEHOLD' AND 'HOUSEHOLD' AND "orders_0"."o_orderdate" BETWEEN '1996-07-19T00:00:00' AND '1997-05-27T00:00:00' AND "supplier_0"."s_phone" BETWEEN '17-915-301-9134' AND '21-201-455-3427' AND "nation_0"."n_comment" BETWEEN 'eans boost carefully special requests. accounts are. carefull' AND 'hely enticingly express accounts. even, final' AND "lineitem_0"."l_shipinstruct" BETWEEN 'COLLECT COD' AND 'DELIVER IN PERSON' AND "partsupp_0"."ps_supplycost" BETWEEN 510.34 AND 639.89;

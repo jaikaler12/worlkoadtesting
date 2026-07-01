@@ -1,0 +1,5 @@
+-- Redbench synthetic query for TPC-H Q4
+-- Feature fingerprint: tpch_q04
+-- Run against: db_augmented_x2.duckdb
+
+SELECT DISTINCT ON("lineitem_0"."l_orderkey", "lineitem_0"."l_linenumber") "lineitem_0"."l_commitdate", "lineitem_0"."l_commitdate" FROM "lineitem_0" JOIN supplier_0 ON "lineitem_0"."l_suppkey" = "supplier_0"."s_suppkey" JOIN nation_0 ON "supplier_0"."s_nationkey" = "nation_0"."n_nationkey" JOIN region_0 ON "nation_0"."n_regionkey" = "region_0"."r_regionkey" WHERE "nation_0"."n_comment" BETWEEN 'haggle. carefully final deposits detect slyly agai' AND 'pending excuses haggle furiously deposits. pending, express pinto beans wake fluffily past t' AND "lineitem_0"."l_commitdate" BETWEEN '1997-03-28T00:00:00' AND '1997-07-26T00:00:00' AND "region_0"."r_comment" BETWEEN 'uickly special accounts cajole carefully blithely close requests. carefully final asymptotes haggle furiousl' AND 'uickly special accounts cajole carefully blithely close requests. carefully final asymptotes haggle furiousl' AND "supplier_0"."s_acctbal" BETWEEN 6028.85 AND 6591.02;
